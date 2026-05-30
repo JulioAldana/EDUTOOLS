@@ -1,0 +1,799 @@
+@extends('layouts.admin')
+
+@section('page-title', 'Panel Administrativo EDUTOOLS')
+@section('page-subtitle', 'Control academico y administrativo del centro educativo')
+
+@section('content')
+    <style>
+        :root {
+            --dash-bg-1: #dff3ff;
+            --dash-bg-2: #e9dbff;
+            --dash-bg-3: #f7d3ec;
+            --dash-text: #111827;
+            --dash-soft: #5b6477;
+            --dash-blue: #6ea8ff;
+            --dash-violet: #8f79ff;
+            --dash-pink: #f05db3;
+            --dash-glass: rgba(255, 255, 255, 0.22);
+            --dash-glass-strong: rgba(255, 255, 255, 0.34);
+            --dash-border: rgba(255, 255, 255, 0.38);
+        }
+
+        .premium-dashboard {
+            min-height: calc(100vh - 120px);
+            position: relative;
+            overflow: hidden;
+            padding: 1.5rem 0 2.5rem;
+            background:
+                radial-gradient(circle at 12% 14%, rgba(173, 226, 255, 0.95), transparent 28%),
+                radial-gradient(circle at 84% 18%, rgba(199, 151, 255, 0.72), transparent 24%),
+                radial-gradient(circle at 76% 74%, rgba(255, 133, 196, 0.58), transparent 25%),
+                linear-gradient(135deg, var(--dash-bg-1) 0%, var(--dash-bg-2) 48%, var(--dash-bg-3) 100%);
+            color: var(--dash-text);
+        }
+
+        .premium-dashboard::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.10) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.10) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: radial-gradient(circle at center, black 0%, transparent 86%);
+            pointer-events: none;
+        }
+
+        .premium-dashboard::after {
+            content: "";
+            position: absolute;
+            width: 560px;
+            height: 560px;
+            right: -180px;
+            top: -180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(240, 93, 179, .18), rgba(110, 168, 255, .14), transparent 70%);
+            filter: blur(26px);
+            pointer-events: none;
+        }
+
+        .dashboard-layer {
+            position: relative;
+            z-index: 2;
+        }
+
+        .glass-card {
+            border: 1px solid var(--dash-border);
+            background: var(--dash-glass);
+            border-radius: 1.6rem;
+            box-shadow:
+                0 24px 70px rgba(92, 95, 161, 0.14),
+                inset 0 1px 0 rgba(255,255,255,0.42);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            overflow: hidden;
+        }
+
+        .hero-premium {
+            position: relative;
+            border-radius: 2rem;
+            padding: clamp(1.6rem, 4vw, 2.6rem);
+            background:
+                linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.13)),
+                radial-gradient(circle at top right, rgba(240, 93, 179, .24), transparent 38%),
+                radial-gradient(circle at bottom left, rgba(110, 168, 255, .25), transparent 42%);
+            border: 1px solid rgba(255,255,255,.42);
+            box-shadow:
+                0 30px 90px rgba(92, 95, 161, 0.18),
+                inset 0 1px 0 rgba(255,255,255,0.48);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            overflow: hidden;
+        }
+
+        .hero-premium::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, transparent, rgba(255,255,255,.18), transparent);
+            transform: translateX(-35%);
+            opacity: .75;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .62rem .95rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,.28);
+            border: 1px solid rgba(255,255,255,.44);
+            color: #2f3f78;
+            font-size: .78rem;
+            font-weight: 900;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            box-shadow: 0 12px 28px rgba(101,116,205,.12);
+        }
+
+        .hero-dot {
+            width: .55rem;
+            height: .55rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--dash-blue), var(--dash-pink));
+            box-shadow: 0 0 18px rgba(240, 93, 179, .55);
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 4.5vw, 4.4rem);
+            line-height: .95;
+            letter-spacing: -0.07em;
+            font-weight: 900;
+            color: #101828;
+        }
+
+        .hero-title span {
+            display: block;
+            color: transparent;
+            -webkit-text-stroke: 1.2px rgba(50, 64, 120, .46);
+        }
+
+        .hero-description {
+            max-width: 760px;
+            color: var(--dash-soft);
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .session-card {
+            border-radius: 1.4rem;
+            background: rgba(255,255,255,.22);
+            border: 1px solid rgba(255,255,255,.40);
+            box-shadow:
+                0 20px 50px rgba(92, 95, 161, .12),
+                inset 0 1px 0 rgba(255,255,255,.42);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .session-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.35rem;
+            background: linear-gradient(135deg, var(--dash-blue), var(--dash-violet), var(--dash-pink));
+            box-shadow: 0 18px 34px rgba(143, 121, 255, .22);
+        }
+
+        .metric-card {
+            position: relative;
+            min-height: 145px;
+            transition: transform .22s ease, box-shadow .22s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 32px 84px rgba(92, 95, 161, 0.20),
+                inset 0 1px 0 rgba(255,255,255,0.46);
+            color: inherit;
+        }
+
+        .metric-label {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #5f667a;
+            font-weight: 900;
+        }
+
+        .metric-number {
+            font-size: 2.1rem;
+            font-weight: 900;
+            letter-spacing: -.05em;
+            color: #101828;
+        }
+
+        .metric-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.35rem;
+            background: linear-gradient(135deg, var(--dash-blue), var(--dash-violet), var(--dash-pink));
+            box-shadow: 0 16px 34px rgba(143, 121, 255, .24);
+        }
+
+        .soft-text {
+            color: var(--dash-soft);
+        }
+
+        .section-title {
+            color: #101828;
+            font-weight: 900;
+            letter-spacing: -.03em;
+        }
+
+        .premium-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            padding: .42rem .72rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,.34);
+            border: 1px solid rgba(255,255,255,.44);
+            color: #31406b;
+            font-size: .76rem;
+            font-weight: 900;
+        }
+
+        .status-dot {
+            width: .65rem;
+            height: .65rem;
+            border-radius: 50%;
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e, #6ee7b7);
+            box-shadow: 0 0 16px rgba(34, 197, 94, .44);
+        }
+
+        .status-row {
+            border-bottom: 1px solid rgba(255,255,255,.30);
+        }
+
+        .status-row:last-child {
+            border-bottom: 0;
+        }
+
+        .premium-table {
+            margin-bottom: 0;
+        }
+
+        .premium-table th {
+            color: #687084;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            font-weight: 900;
+            border-color: rgba(255,255,255,.32);
+            padding: .85rem;
+        }
+
+        .premium-table td {
+            color: #243047;
+            border-color: rgba(255,255,255,.28);
+            padding: .85rem;
+            vertical-align: middle;
+        }
+
+        .module-link {
+            display: block;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,.20);
+            border: 1px solid rgba(255,255,255,.34);
+            transition: transform .20s ease, background .20s ease, box-shadow .20s ease;
+        }
+
+        .module-link:hover {
+            transform: translateY(-4px);
+            background: rgba(255,255,255,.34);
+            color: inherit;
+            box-shadow: 0 18px 38px rgba(92, 95, 161, .13);
+        }
+
+        .module-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--dash-blue), var(--dash-violet), var(--dash-pink));
+            box-shadow: 0 12px 28px rgba(143, 121, 255, .20);
+        }
+
+        #academicActivityChart {
+            min-height: 360px;
+        }
+
+        @media (max-width: 768px) {
+            .premium-dashboard {
+                padding-top: 1rem;
+            }
+
+            .hero-title {
+                font-size: clamp(2.3rem, 13vw, 3.4rem);
+            }
+
+            .metric-card {
+                min-height: auto;
+            }
+        }
+    </style>
+
+    <div class="premium-dashboard">
+        <div class="container-fluid px-3 px-lg-4 dashboard-layer">
+
+            <section class="hero-premium mb-4">
+                <div class="hero-content">
+                    <div class="row align-items-center g-4">
+                        <div class="col-xl-8">
+                            <div class="hero-badge mb-3">
+                                <span class="hero-dot"></span>
+                                Plataforma acad&eacute;mica operativa
+                            </div>
+
+                            <h1 class="hero-title mb-3">
+                                Administraci&oacute;n centralizada
+                                <span>EDUTOOLS</span>
+                            </h1>
+
+                            <p class="hero-description mb-0">
+                                Gestiona alumnos, tutores, docentes, cursos, grados, secciones,
+                                inscripciones, notas, asistencia, usuarios y calendario acad&eacute;mico
+                                desde un panel seguro con datos reales conectados a MySQL.
+                            </p>
+                        </div>
+
+                        <div class="col-xl-4">
+                            <div class="session-card p-4">
+                                <div class="d-flex align-items-center gap-3 mb-3">
+                                    <div class="session-avatar">
+                                        <i class="bi bi-person-lock"></i>
+                                    </div>
+                                    <div>
+                                        <div class="metric-label">Sesi&oacute;n actual</div>
+                                        <h5 class="fw-bold mb-0">{{ Auth::user()->name }}</h5>
+                                    </div>
+                                </div>
+
+                                <p class="soft-text mb-3">{{ Auth::user()->email }}</p>
+
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="premium-badge">
+                                        <span class="status-dot"></span>
+                                        Activo
+                                    </span>
+                                    <span class="premium-badge">
+                                        Rol: {{ Auth::user()->role }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('students.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <div class="metric-label mb-2">Estudiantes</div>
+                                <div class="metric-number">{{ $stats['active_students'] }}</div>
+                                <p class="soft-text mb-0">Activos de {{ $stats['students'] }} registrados</p>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="bi bi-mortarboard-fill"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('guardians.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <div class="metric-label mb-2">Padres/Tutores</div>
+                                <div class="metric-number">{{ $stats['active_guardians'] }}</div>
+                                <p class="soft-text mb-0">Responsables activos</p>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="bi bi-person-hearts"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('teachers.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <div class="metric-label mb-2">Docentes</div>
+                                <div class="metric-number">{{ $stats['active_teachers'] }}</div>
+                                <p class="soft-text mb-0">Activos de {{ $stats['teachers'] }} registrados</p>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="bi bi-person-workspace"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('courses.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <div class="metric-label mb-2">Cursos</div>
+                                <div class="metric-number">{{ $stats['active_courses'] }}</div>
+                                <p class="soft-text mb-0">Cursos activos</p>
+                            </div>
+                            <div class="metric-icon">
+                                <i class="bi bi-journal-bookmark-fill"></i>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="row g-4 mb-4">
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('enrollments.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="metric-label mb-2">Inscripciones activas</div>
+                        <div class="metric-number">{{ $stats['active_enrollments'] }}</div>
+                        <p class="soft-text mb-0">Total: {{ $stats['enrollments'] }}</p>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('grade-records.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="metric-label mb-2">Notas activas</div>
+                        <div class="metric-number">{{ $stats['active_grade_records'] }}</div>
+                        <p class="soft-text mb-0">Total: {{ $stats['grade_records'] }}</p>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('attendance-records.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="metric-label mb-2">Asistencias</div>
+                        <div class="metric-number">{{ $stats['attendance_records'] }}</div>
+                        <p class="soft-text mb-0">Registros acad&eacute;micos</p>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <a href="{{ route('academic-calendar-events.index') }}" class="glass-card metric-card d-block p-4">
+                        <div class="metric-label mb-2">Eventos activos</div>
+                        <div class="metric-number">{{ $stats['active_calendar_events'] }}</div>
+                        <p class="soft-text mb-0">Calendario acad&eacute;mico</p>
+                    </a>
+                </div>
+            </section>
+
+            <section class="row g-4 mb-4">
+                <div class="col-xl-8">
+                    <div class="glass-card h-100">
+                        <div class="p-4">
+                            <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-3">
+                                <div>
+                                    <h5 class="section-title mb-1">Resumen operativo del sistema</h5>
+                                    <p class="soft-text mb-0">Conteos reales obtenidos desde MySQL.</p>
+                                </div>
+
+                                <span class="premium-badge align-self-md-start">
+                                    <i class="bi bi-database-check"></i>
+                                    Datos reales
+                                </span>
+                            </div>
+
+                            <div id="academicActivityChart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="glass-card h-100">
+                        <div class="p-4">
+                            <h5 class="section-title mb-1">Estado del sistema</h5>
+                            <p class="soft-text mb-4">Componentes principales verificados.</p>
+
+                            <div class="status-row d-flex align-items-center justify-content-between py-3">
+                                <div><span class="status-dot me-2"></span>Autenticaci&oacute;n</div>
+                                <span class="premium-badge">Activa</span>
+                            </div>
+
+                            <div class="status-row d-flex align-items-center justify-content-between py-3">
+                                <div><span class="status-dot me-2"></span>Roles</div>
+                                <span class="premium-badge">Activos</span>
+                            </div>
+
+                            <div class="status-row d-flex align-items-center justify-content-between py-3">
+                                <div><span class="status-dot me-2"></span>Portal padres</div>
+                                <span class="premium-badge">Funcional</span>
+                            </div>
+
+                            <div class="status-row d-flex align-items-center justify-content-between py-3">
+                                <div><span class="status-dot me-2"></span>CRUDs administrativos</div>
+                                <span class="premium-badge">Completos</span>
+                            </div>
+
+                            <div class="status-row d-flex align-items-center justify-content-between py-3">
+                                <div><span class="status-dot me-2"></span>MySQL</div>
+                                <span class="premium-badge">Conectado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row g-4 mb-4">
+                <div class="col-xl-4">
+                    <div class="glass-card h-100">
+                        <div class="p-4">
+                            <h5 class="section-title mb-3">&Uacute;ltimas inscripciones</h5>
+
+                            <div class="table-responsive">
+                                <table class="table premium-table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Alumno</th>
+                                            <th>Ciclo</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($latestEnrollments as $enrollment)
+                                            <tr>
+                                                <td>
+                                                    {{ $enrollment->student->first_name ?? 'Alumno' }}
+                                                    {{ $enrollment->student->last_name ?? '' }}
+                                                </td>
+                                                <td>{{ $enrollment->academic_year }}</td>
+                                                <td><span class="premium-badge">{{ ucfirst($enrollment->status) }}</span></td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="soft-text">Sin inscripciones recientes.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="glass-card h-100">
+                        <div class="p-4">
+                            <h5 class="section-title mb-3">&Uacute;ltimas notas</h5>
+
+                            <div class="table-responsive">
+                                <table class="table premium-table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Alumno</th>
+                                            <th>Curso</th>
+                                            <th>Nota</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($latestGradeRecords as $gradeRecord)
+                                            <tr>
+                                                <td>
+                                                    {{ $gradeRecord->student->first_name ?? 'Alumno' }}
+                                                    {{ $gradeRecord->student->last_name ?? '' }}
+                                                </td>
+                                                <td>{{ $gradeRecord->course->name ?? 'Curso' }}</td>
+                                                <td>{{ number_format($gradeRecord->score, 2) }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="3" class="soft-text">Sin notas recientes.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4">
+                    <div class="glass-card h-100">
+                        <div class="p-4">
+                            <h5 class="section-title mb-3">Eventos pr&oacute;ximos</h5>
+
+                            <div class="table-responsive">
+                                <table class="table premium-table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Evento</th>
+                                            <th>Fecha</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($upcomingEvents as $event)
+                                            <tr>
+                                                <td>{{ $event->title }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($event->event_date)->format('d/m/Y') }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="2" class="soft-text">Sin eventos pr&oacute;ximos.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="row g-4">
+                <div class="col-12">
+                    <div class="glass-card">
+                        <div class="p-4">
+                            <h5 class="section-title mb-3">M&oacute;dulos administrativos disponibles</h5>
+
+                            <div class="row g-3">
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('users.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-people-fill"></i></div>
+                                        <p class="fw-bold mb-0">Usuarios</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('grades.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-layers"></i></div>
+                                        <p class="fw-bold mb-0">Grados</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('sections.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-grid-3x3-gap"></i></div>
+                                        <p class="fw-bold mb-0">Secciones</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('enrollments.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-clipboard-check"></i></div>
+                                        <p class="fw-bold mb-0">Inscripciones</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('grade-records.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-clipboard-data"></i></div>
+                                        <p class="fw-bold mb-0">Notas</p>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 col-md-4 col-xl-2">
+                                    <a href="{{ route('attendance-records.index') }}" class="module-link">
+                                        <div class="module-icon mb-3"><i class="bi bi-calendar-check"></i></div>
+                                        <p class="fw-bold mb-0">Asistencia</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartElement = document.querySelector('#academicActivityChart');
+
+            const chartLabels = @json($chartData['labels']);
+            const chartValues = @json($chartData['values']);
+
+            if (chartElement && window.ApexCharts) {
+                const options = {
+                    chart: {
+                        type: 'bar',
+                        height: 360,
+                        toolbar: { show: false },
+                        background: 'transparent',
+                        animations: {
+                            enabled: true,
+                            easing: 'easeinout',
+                            speed: 900
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'Registros activos',
+                            data: chartValues
+                        }
+                    ],
+                    colors: ['#8f79ff'],
+                    xaxis: {
+                        categories: chartLabels,
+                        labels: {
+                            style: {
+                                colors: '#5b6477',
+                                fontWeight: 700
+                            }
+                        },
+                        axisBorder: { show: false },
+                        axisTicks: { show: false }
+                    },
+                    yaxis: {
+                        labels: {
+                            style: {
+                                colors: '#5b6477',
+                                fontWeight: 700
+                            }
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            borderRadius: 10,
+                            columnWidth: '48%',
+                            distributed: true
+                        }
+                    },
+                    fill: {
+                        type: 'gradient',
+                        gradient: {
+                            shade: 'light',
+                            type: 'vertical',
+                            shadeIntensity: 0.2,
+                            gradientToColors: ['#f05db3'],
+                            inverseColors: false,
+                            opacityFrom: 0.95,
+                            opacityTo: 0.70
+                        }
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            colors: ['#101828'],
+                            fontWeight: 900
+                        },
+                        background: {
+                            enabled: true,
+                            foreColor: '#101828',
+                            borderRadius: 8,
+                            opacity: 0.65
+                        }
+                    },
+                    grid: {
+                        borderColor: 'rgba(255,255,255,.42)',
+                        strokeDashArray: 6
+                    },
+                    tooltip: {
+                        theme: 'light',
+                        y: {
+                            formatter: function (value) {
+                                return value + ' registros';
+                            }
+                        }
+                    },
+                    legend: {
+                        show: false
+                    }
+                };
+
+                const chart = new ApexCharts(chartElement, options);
+                chart.render();
+            }
+        });
+    </script>
+@endsection

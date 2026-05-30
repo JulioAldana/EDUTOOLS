@@ -1,17 +1,19 @@
-@'
-<x-guest-layout>
+﻿<x-guest-layout>
     <style>
         :root {
             --bg-1: #dff3ff;
             --bg-2: #e9dbff;
             --bg-3: #f7d3ec;
             --glass: rgba(255, 255, 255, 0.18);
-            --glass-border: rgba(255, 255, 255, 0.34);
+            --glass-strong: rgba(255, 255, 255, 0.26);
+            --glass-border: rgba(255, 255, 255, 0.30);
             --text-main: #111827;
             --text-soft: #4b5563;
             --accent-1: #6ea8ff;
-            --accent-2: #8f79ff;
+            --accent-2: #9b6dff;
             --accent-3: #f05db3;
+            --accent-dark: #2f3f78;
+            --white-soft: rgba(255,255,255,0.72);
         }
 
         * {
@@ -24,21 +26,21 @@
             font-family: Figtree, sans-serif;
             overflow-x: hidden;
             background:
-                radial-gradient(circle at 14% 22%, rgba(173, 226, 255, 0.95), transparent 28%),
-                radial-gradient(circle at 80% 28%, rgba(199, 151, 255, 0.72), transparent 24%),
-                radial-gradient(circle at 74% 74%, rgba(255, 133, 196, 0.68), transparent 25%),
+                radial-gradient(circle at 15% 25%, rgba(173, 226, 255, 0.95), transparent 28%),
+                radial-gradient(circle at 78% 30%, rgba(199, 151, 255, 0.72), transparent 24%),
+                radial-gradient(circle at 72% 72%, rgba(255, 133, 196, 0.68), transparent 25%),
                 linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 48%, var(--bg-3) 100%);
             color: var(--text-main);
         }
 
-        .register-scene {
-            min-height: 100vh;
+        .login-scene {
             position: relative;
+            min-height: 100vh;
             overflow: hidden;
             isolation: isolate;
         }
 
-        .register-scene::before {
+        .login-scene::before {
             content: "";
             position: absolute;
             inset: 0;
@@ -48,31 +50,32 @@
             background-size: 46px 46px;
             mask-image: radial-gradient(circle at center, black 0%, transparent 86%);
             z-index: -5;
+            pointer-events: none;
         }
 
         .bg-blob {
             position: absolute;
             border-radius: 50%;
             filter: blur(60px);
-            opacity: .66;
+            opacity: 0.62;
             pointer-events: none;
             z-index: -4;
             animation: blobFloat 12s ease-in-out infinite;
         }
 
         .bg-blob.one {
-            width: 420px;
-            height: 420px;
-            left: -100px;
-            top: 70px;
+            width: 430px;
+            height: 430px;
+            left: -120px;
+            top: 60px;
             background: rgba(126, 211, 255, 0.55);
         }
 
         .bg-blob.two {
-            width: 390px;
-            height: 390px;
+            width: 380px;
+            height: 380px;
             right: 12%;
-            top: 10%;
+            top: 12%;
             background: rgba(182, 126, 255, 0.45);
             animation-delay: -3s;
         }
@@ -80,9 +83,9 @@
         .bg-blob.three {
             width: 420px;
             height: 420px;
-            right: -90px;
-            bottom: -50px;
-            background: rgba(255, 121, 188, 0.42);
+            right: -80px;
+            bottom: -40px;
+            background: rgba(255, 121, 188, 0.40);
             animation-delay: -6s;
         }
 
@@ -95,29 +98,29 @@
             }
         }
 
-        #register-rain {
+        #academic-rain {
             position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             z-index: -2;
-            opacity: .58;
+            opacity: 0.58;
             pointer-events: none;
         }
 
         .content-shell {
             min-height: 100vh;
             display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(390px, .9fr);
+            grid-template-columns: minmax(0, 1.15fr) minmax(390px, 0.85fr);
             align-items: center;
             gap: clamp(2rem, 5vw, 6rem);
-            padding: clamp(2.4rem, 5vw, 4.8rem) clamp(1.4rem, 4vw, 4rem);
+            padding: clamp(1.4rem, 4vw, 4rem);
             position: relative;
         }
 
         .hero-panel {
-            max-width: 720px;
             position: relative;
+            max-width: 720px;
             z-index: 2;
         }
 
@@ -133,7 +136,7 @@
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             font-size: .8rem;
-            font-weight: 900;
+            font-weight: 800;
             letter-spacing: .10em;
             text-transform: uppercase;
             color: #2f3f78;
@@ -150,7 +153,7 @@
 
         .hero-title {
             margin: 0;
-            font-size: clamp(2.5rem, 5.8vw, 5.2rem);
+            font-size: clamp(3.1rem, 7vw, 6.4rem);
             line-height: .92;
             letter-spacing: -0.08em;
             font-weight: 900;
@@ -173,20 +176,18 @@
             color: var(--text-soft);
         }
 
-        .process-list {
-            display: grid;
+        .hero-chips {
+            display: flex;
+            flex-wrap: wrap;
             gap: .9rem;
             margin-top: 2rem;
-            max-width: 560px;
         }
 
-        .process-item {
-            display: flex;
-            gap: .85rem;
-            align-items: flex-start;
-            padding: 1rem;
+        .hero-chip {
+            padding: 1rem 1.1rem;
+            min-width: 145px;
             border-radius: 1.3rem;
-            background: rgba(255,255,255,0.19);
+            background: rgba(255,255,255,0.18);
             border: 1px solid rgba(255,255,255,0.34);
             box-shadow:
                 0 18px 40px rgba(91, 96, 160, 0.12),
@@ -195,31 +196,59 @@
             -webkit-backdrop-filter: blur(16px);
         }
 
-        .process-number {
-            width: 32px;
-            height: 32px;
-            min-width: 32px;
-            border-radius: 50%;
-            display: grid;
-            place-items: center;
-            color: white;
-            font-weight: 900;
-            background: linear-gradient(135deg, #6ea8ff, #8f79ff, #f05db3);
-            box-shadow: 0 10px 24px rgba(143, 121, 255, .24);
-        }
-
-        .process-item strong {
+        .hero-chip strong {
             display: block;
+            font-size: 1.35rem;
+            line-height: 1.1;
             color: #172033;
-            font-size: .96rem;
-            margin-bottom: .2rem;
         }
 
-        .process-item span {
-            display: block;
+        .hero-chip small {
             color: #5f667a;
-            font-size: .84rem;
-            line-height: 1.55;
+            font-size: .8rem;
+        }
+
+        .floating-note {
+            position: absolute;
+            right: -2%;
+            top: 7%;
+            width: 140px;
+            padding: .85rem .95rem;
+            border-radius: 1.2rem;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.32);
+            box-shadow: 0 20px 48px rgba(83, 87, 148, 0.14);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            color: #31406b;
+            font-weight: 800;
+            font-size: .88rem;
+            animation: floatCard 8s ease-in-out infinite;
+        }
+
+        .floating-note.two {
+            right: 2%;
+            bottom: 5%;
+            top: auto;
+            width: 155px;
+            animation-delay: -4s;
+        }
+
+        .floating-note .mini {
+            display: block;
+            margin-top: .3rem;
+            font-size: .75rem;
+            color: #667085;
+            font-weight: 600;
+        }
+
+        @keyframes floatCard {
+            0%, 100% {
+                transform: translateY(0) rotate(-2deg);
+            }
+            50% {
+                transform: translateY(-14px) rotate(1deg);
+            }
         }
 
         .auth-panel-wrap {
@@ -240,8 +269,8 @@
         }
 
         .auth-panel {
-            width: min(100%, 455px);
-            padding: 2rem;
+            width: min(100%, 430px);
+            padding: 2.1rem;
             border-radius: 2rem;
             background: rgba(255,255,255,0.17);
             border: 1px solid rgba(255,255,255,0.34);
@@ -266,9 +295,9 @@
         }
 
         .auth-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 1rem;
+            width: 74px;
+            height: 74px;
+            margin: 0 auto 1.1rem;
             border-radius: 50%;
             display: grid;
             place-items: center;
@@ -276,7 +305,7 @@
             border: 1px solid rgba(255,255,255,0.35);
             box-shadow: 0 12px 30px rgba(112, 101, 200, 0.12);
             color: #31406b;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             position: relative;
             z-index: 1;
         }
@@ -284,7 +313,7 @@
         .auth-title {
             text-align: center;
             margin: 0;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 900;
             letter-spacing: -0.04em;
             color: #172033;
@@ -294,31 +323,31 @@
 
         .auth-subtitle {
             text-align: center;
-            margin: .5rem 0 1.3rem;
+            margin: .5rem 0 1.4rem;
             color: #5b6477;
-            font-size: .93rem;
-            line-height: 1.65;
+            font-size: .95rem;
+            line-height: 1.7;
             position: relative;
             z-index: 1;
         }
 
-        .notice-pill {
+        .secure-pill {
             display: inline-flex;
             align-items: center;
             gap: .45rem;
-            margin: 0 auto 1.3rem;
+            margin: 0 auto 1.4rem;
             padding: .5rem .8rem;
             border-radius: 999px;
             background: rgba(255,255,255,0.24);
             border: 1px solid rgba(255,255,255,0.34);
             color: #31526a;
-            font-size: .74rem;
-            font-weight: 900;
+            font-size: .75rem;
+            font-weight: 800;
             position: relative;
             z-index: 1;
         }
 
-        .notice-pill-dot {
+        .secure-pill-dot {
             width: .5rem;
             height: .5rem;
             border-radius: 50%;
@@ -326,18 +355,30 @@
             box-shadow: 0 0 14px rgba(240,93,179,0.50);
         }
 
+        .status-box {
+            margin-bottom: 1rem;
+            padding: .85rem 1rem;
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.22);
+            border: 1px solid rgba(255,255,255,0.34);
+            color: #27446e;
+            font-size: .92rem;
+            position: relative;
+            z-index: 1;
+        }
+
         .field-block {
-            margin-bottom: .9rem;
+            margin-bottom: 1rem;
             position: relative;
             z-index: 1;
         }
 
         .field-label {
             display: block;
-            font-size: .82rem;
-            font-weight: 900;
+            font-size: .84rem;
+            font-weight: 800;
             color: #31406b;
-            margin-bottom: .4rem;
+            margin-bottom: .45rem;
         }
 
         .field-input {
@@ -346,8 +387,8 @@
             background: rgba(255,255,255,0.50);
             color: #172033;
             border-radius: 1rem;
-            padding: .88rem 1rem;
-            font-size: .94rem;
+            padding: .95rem 1rem;
+            font-size: .95rem;
             outline: none;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.22);
             transition: .25s ease;
@@ -358,7 +399,7 @@
         }
 
         .field-input:focus {
-            background: rgba(255,255,255,0.64);
+            background: rgba(255,255,255,0.62);
             border-color: rgba(255,255,255,0.52);
             box-shadow:
                 0 0 0 5px rgba(173, 226, 255, 0.35),
@@ -367,19 +408,53 @@
         }
 
         .error-box {
-            margin-top: .35rem;
+            margin-top: .4rem;
             color: #a11b63;
-            font-size: .82rem;
+            font-size: .83rem;
+            font-weight: 600;
+        }
+
+        .row-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin: .9rem 0 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .remember-box {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            color: #4b5563;
+            font-size: .87rem;
+        }
+
+        .remember-box input {
+            width: 16px;
+            height: 16px;
+            accent-color: #8d75ff;
+        }
+
+        .link-soft {
+            color: #4c57c7;
+            text-decoration: none;
+            font-size: .87rem;
             font-weight: 700;
+        }
+
+        .link-soft:hover {
+            color: #d13f95;
         }
 
         .primary-btn {
             width: 100%;
             border: none;
             border-radius: 1rem;
-            padding: 1rem;
-            margin-top: .4rem;
-            font-size: .97rem;
+            padding: 1rem 1rem;
+            font-size: .98rem;
             font-weight: 900;
             color: white;
             cursor: pointer;
@@ -413,8 +488,8 @@
             transform: translateX(120%);
         }
 
-        .login-box {
-            margin-top: 1rem;
+        .register-box {
+            margin-top: 1.2rem;
             text-align: center;
             color: #5e6578;
             font-size: .9rem;
@@ -422,14 +497,20 @@
             z-index: 1;
         }
 
-        .login-box a {
+        .register-box a {
             color: #4c57c7;
-            font-weight: 900;
+            font-weight: 800;
             text-decoration: none;
         }
 
-        .login-box a:hover {
+        .register-box a:hover {
             color: #d13f95;
+        }
+
+        @media (max-width: 1100px) {
+            .floating-note {
+                display: none;
+            }
         }
 
         @media (max-width: 980px) {
@@ -443,27 +524,43 @@
                 margin-inline: auto;
             }
 
-            .hero-text,
-            .process-list {
+            .hero-text {
                 margin-left: auto;
                 margin-right: auto;
+            }
+
+            .hero-chips {
+                justify-content: center;
             }
         }
 
         @media (max-width: 560px) {
             .hero-title {
-                font-size: clamp(2.6rem, 15vw, 4.2rem);
+                font-size: clamp(2.7rem, 16vw, 4.5rem);
             }
 
             .auth-panel {
                 padding: 1.35rem;
                 border-radius: 1.5rem;
             }
+
+            .row-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-chips {
+                gap: .7rem;
+            }
+
+            .hero-chip {
+                min-width: 100%;
+            }
         }
     </style>
 
-    <section class="register-scene">
-        <canvas id="register-rain"></canvas>
+    <section class="login-scene">
+        <canvas id="academic-rain"></canvas>
 
         <div class="bg-blob one"></div>
         <div class="bg-blob two"></div>
@@ -473,45 +570,44 @@
             <div class="hero-panel">
                 <div class="hero-badge">
                     <span class="hero-badge-dot"></span>
-                    Acceso familiar e institucional
+                    Plataforma académica inteligente
                 </div>
 
                 <h1 class="hero-title">
-                    SOLICITUD
-                    <span class="outline">DE ACCESO</span>
-                    <span class="outline">EDUTOOLS</span>
+                    EDUTOOLS
+                    <span class="outline">CONTROL</span>
+                    <span class="outline">ACADÉMICO</span>
                 </h1>
 
                 <p class="hero-text">
-                    Registra una cuenta inicial para acceder al entorno acad&eacute;mico. En una implementaci&oacute;n real,
-                    las solicitudes familiares pueden ser revisadas por administraci&oacute;n antes de habilitar el
-                    acceso definitivo.
+                    Plataforma educativa para administrar estudiantes, docentes, cursos,
+                    notas, asistencia, calendario institucional y acceso familiar desde una
+                    experiencia moderna, visual y tecnológicamente elegante.
                 </p>
 
-                <div class="process-list">
-                    <div class="process-item">
-                        <div class="process-number">1</div>
-                        <div>
-                            <strong>Registro de datos</strong>
-                            <span>El solicitante ingresa su nombre, correo y credenciales de acceso.</span>
-                        </div>
+                <div class="hero-chips">
+                    <div class="hero-chip">
+                        <strong>360°</strong>
+                        <small>Gestión académica</small>
                     </div>
+                    <div class="hero-chip">
+                        <strong>Roles</strong>
+                        <small>Acceso protegido</small>
+                    </div>
+                    <div class="hero-chip">
+                        <strong>MySQL</strong>
+                        <small>Datos estructurados</small>
+                    </div>
+                </div>
 
-                    <div class="process-item">
-                        <div class="process-number">2</div>
-                        <div>
-                            <strong>Validaci&oacute;n institucional</strong>
-                            <span>La instituci&oacute;n puede revisar y vincular el usuario con estudiantes o tutores.</span>
-                        </div>
-                    </div>
+                <div class="floating-note">
+                    Rendimiento A+
+                    <span class="mini">Monitoreo académico</span>
+                </div>
 
-                    <div class="process-item">
-                        <div class="process-number">3</div>
-                        <div>
-                            <strong>Acceso al portal</strong>
-                            <span>Una vez autorizado, el usuario puede consultar informaciÃ³n acad&eacute;mica correspondiente.</span>
-                        </div>
-                    </div>
+                <div class="floating-note two">
+                    Calendario activo
+                    <span class="mini">Control institucional</span>
                 </div>
             </div>
 
@@ -519,43 +615,31 @@
                 <div class="panel-glow"></div>
 
                 <div class="auth-panel">
-                    <div class="auth-icon">âœ¦</div>
+                    <div class="auth-icon">◎</div>
 
-                    <h2 class="auth-title">Solicitud de acceso institucional</h2>
+                    <h2 class="auth-title">Acceso institucional</h2>
                     <p class="auth-subtitle">
-                        Completa los datos para crear tu acceso inicial al sistema.
+                        Ingresa con tus credenciales para continuar en el entorno académico.
                     </p>
 
                     <div style="text-align:center;">
-                        <div class="notice-pill">
-                            <span class="notice-pill-dot"></span>
-                            Registro sujeto a validaci&oacute;n acad&eacute;mica
+                        <div class="secure-pill">
+                            <span class="secure-pill-dot"></span>
+                            Sesión protegida por roles
                         </div>
                     </div>
 
-                    <form method="POST" action="{{ route('register') }}">
+                    @if (session('status'))
+                        <div class="status-box">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('login') }}">
                         @csrf
 
                         <div class="field-block">
-                            <label class="field-label" for="name">Nombre completo</label>
-                            <input
-                                id="name"
-                                class="field-input"
-                                type="text"
-                                name="name"
-                                value="{{ old('name') }}"
-                                required
-                                autofocus
-                                autocomplete="name"
-                                placeholder="Nombre y apellido"
-                            >
-                            @error('name')
-                                <div class="error-box">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="field-block">
-                            <label class="field-label" for="email">Correo electr&oacute;nico</label>
+                            <label class="field-label" for="email">Correo electrónico</label>
                             <input
                                 id="email"
                                 class="field-input"
@@ -563,8 +647,9 @@
                                 name="email"
                                 value="{{ old('email') }}"
                                 required
+                                autofocus
                                 autocomplete="username"
-                                placeholder="correo@ejemplo.com"
+                                placeholder="admin@edutools.test"
                             >
                             @error('email')
                                 <div class="error-box">{{ $message }}</div>
@@ -572,45 +657,44 @@
                         </div>
 
                         <div class="field-block">
-                            <label class="field-label" for="password">Contrase&ntilde;a</label>
+                            <label class="field-label" for="password">Contraseña</label>
                             <input
                                 id="password"
                                 class="field-input"
                                 type="password"
                                 name="password"
                                 required
-                                autocomplete="new-password"
-                                placeholder="Crea una contrase&ntilde;a segura"
+                                autocomplete="current-password"
+                                placeholder="Ingresa tu contraseña"
                             >
                             @error('password')
                                 <div class="error-box">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="field-block">
-                            <label class="field-label" for="password_confirmation">Confirmar contrase&ntilde;a</label>
-                            <input
-                                id="password_confirmation"
-                                class="field-input"
-                                type="password"
-                                name="password_confirmation"
-                                required
-                                autocomplete="new-password"
-                                placeholder="Repite la contrase&ntilde;a"
-                            >
-                            @error('password_confirmation')
-                                <div class="error-box">{{ $message }}</div>
-                            @enderror
+                        <div class="row-actions">
+                            <label for="remember_me" class="remember-box">
+                                <input id="remember_me" type="checkbox" name="remember">
+                                <span>Recordarme</span>
+                            </label>
+
+                            @if (Route::has('password.request'))
+                                <a class="link-soft" href="{{ route('password.request') }}">
+                                    ¿Olvidaste tu contraseña?
+                                </a>
+                            @endif
                         </div>
 
                         <button type="submit" class="primary-btn">
-                            Enviar solicitud de acceso
+                            Iniciar sesión
                         </button>
 
-                        <div class="login-box">
-                            Â¿Ya tienes una cuenta?
-                            <a href="{{ route('login') }}">Iniciar sesi&oacute;n</a>
-                        </div>
+                        @if (Route::has('register'))
+                            <div class="register-box">
+                                ¿No tienes cuenta?
+                                <a href="{{ route('register') }}">Solicitar acceso</a>
+                            </div>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -619,23 +703,23 @@
 
     <script>
     (() => {
-        const canvas = document.getElementById('register-rain');
+        const canvas = document.getElementById('academic-rain');
         if (!canvas) return;
 
         const ctx = canvas.getContext('2d');
 
         const symbols = [
-            'âœ', 'ðŸ“˜', 'ðŸ“š', 'ðŸ“', 'ðŸ“’', 'ðŸ““', 'ðŸ“”', 'ðŸ“', 'ðŸ“', 'ðŸ§®',
-            'ðŸ—“', 'ðŸŽ“', 'A+', '100', 'Ï€', 'âˆ‘', 'âˆš', 'Î”', 'f(x)', 'xÂ²',
-            'ABC', '123', 'nota', 'quiz', 'tarea', 'curso', 'clase', 'SQL', 'JS'
+            '✏︎', '📘', '📚', '📝', '📒', '📓', '📔', '📐', '📏', '🧮',
+            '🗓', '🎓', 'A+', '100', 'π', '∑', '√', 'Δ', 'f(x)', 'x²',
+            'ABC', '123', 'nota', 'quiz', 'tarea', 'curso', 'clase'
         ];
 
         let width = 0;
         let height = 0;
-        let streams = [];
-        let rafId = null;
+        let drops = [];
+        let animationId = null;
 
-        function rand(min, max) {
+        function randomBetween(min, max) {
             return Math.random() * (max - min) + min;
         }
 
@@ -643,150 +727,129 @@
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        function makeTrail(length) {
-            const items = [];
-            for (let i = 0; i < length; i++) {
-                items.push(pick(symbols));
-            }
-            return items;
-        }
-
-        function makeStream(x, layer) {
-            let size, speed, alpha, gap, trail, color, sway;
+        function createDrop(x, layer) {
+            let size, speed, alpha, sway, color;
 
             if (layer === 'back') {
-                size = rand(16, 20);
-                speed = rand(0.28, 0.38);
-                alpha = rand(0.20, 0.28);
-                gap = rand(36, 44);
-                trail = 5;
+                size = randomBetween(14, 18);
+                speed = randomBetween(0.38, 0.54);
+                alpha = randomBetween(0.10, 0.16);
+                sway = randomBetween(0.15, 0.35);
                 color = 'rgba(110, 168, 255, 1)';
-                sway = rand(1.5, 3.5);
             } else if (layer === 'mid') {
-                size = rand(20, 24);
-                speed = rand(0.38, 0.54);
-                alpha = rand(0.28, 0.38);
-                gap = rand(42, 50);
-                trail = 6;
+                size = randomBetween(18, 24);
+                speed = randomBetween(0.48, 0.68);
+                alpha = randomBetween(0.16, 0.24);
+                sway = randomBetween(0.25, 0.55);
                 color = 'rgba(155, 109, 255, 1)';
-                sway = rand(2.5, 5.0);
             } else {
-                size = rand(24, 30);
-                speed = rand(0.48, 0.68);
-                alpha = rand(0.36, 0.48);
-                gap = rand(48, 58);
-                trail = 7;
+                size = randomBetween(22, 30);
+                speed = randomBetween(0.56, 0.78);
+                alpha = randomBetween(0.20, 0.30);
+                sway = randomBetween(0.35, 0.75);
                 color = 'rgba(240, 93, 179, 1)';
-                sway = rand(3.5, 6.5);
             }
 
             return {
                 x,
                 baseX: x,
-                y: rand(-height, height * 0.15),
+                y: randomBetween(-height, 0),
                 size,
                 speed,
                 alpha,
-                gap,
-                trail,
-                color,
                 sway,
-                phase: rand(0, Math.PI * 2),
-                items: makeTrail(trail)
+                phase: randomBetween(0, Math.PI * 2),
+                symbol: pick(symbols),
+                color,
+                layer
             };
         }
 
-        function buildStreams() {
-            streams = [];
+        function buildDrops() {
+            drops = [];
 
-            const spacingBack = width < 768 ? 80 : 92;
-            const spacingMid = width < 768 ? 110 : 126;
+            const spacingBack = width < 768 ? 85 : 95;
+            const spacingMid = width < 768 ? 110 : 125;
             const spacingFront = width < 768 ? 145 : 165;
 
-            for (let x = 18; x < width; x += spacingBack) {
-                streams.push(makeStream(x, 'back'));
+            for (let x = 20; x < width; x += spacingBack) {
+                drops.push(createDrop(x, 'back'));
             }
 
-            for (let x = 45; x < width; x += spacingMid) {
-                streams.push(makeStream(x, 'mid'));
+            for (let x = 50; x < width; x += spacingMid) {
+                drops.push(createDrop(x, 'mid'));
             }
 
-            for (let x = 82; x < width; x += spacingFront) {
-                streams.push(makeStream(x, 'front'));
+            for (let x = 90; x < width; x += spacingFront) {
+                drops.push(createDrop(x, 'front'));
             }
         }
 
         function resizeCanvas() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
-            buildStreams();
+            buildDrops();
         }
 
-        function drawStream(stream, time) {
-            const swayOffset = Math.sin((time * 0.001) + stream.phase + (stream.y * 0.003)) * stream.sway;
-            const x = stream.baseX + swayOffset;
+        function drawDrop(drop, time) {
+            const swayOffset = Math.sin((time * 0.0007) + drop.phase + drop.y * 0.01) * (8 * drop.sway);
+            const drawX = drop.baseX + swayOffset;
 
-            for (let i = 0; i < stream.items.length; i++) {
-                const y = stream.y - (i * stream.gap);
+            ctx.save();
+            ctx.globalAlpha = drop.alpha;
+            ctx.font = `700 ${drop.size}px Figtree, sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = drop.color;
 
-                if (y < -80 || y > height + 80) continue;
+            if (drop.layer === 'front') {
+                ctx.shadowColor = 'rgba(255,255,255,0.18)';
+                ctx.shadowBlur = 10;
+            } else if (drop.layer === 'mid') {
+                ctx.shadowColor = 'rgba(255,255,255,0.08)';
+                ctx.shadowBlur = 5;
+            }
 
-                const fade = Math.max(0, stream.alpha - (i * (stream.alpha / (stream.items.length + 0.8))));
+            ctx.fillText(drop.symbol, drawX, drop.y);
+            ctx.restore();
+        }
 
-                ctx.save();
-                ctx.globalAlpha = fade;
-                ctx.font = '700 ' + stream.size + 'px Figtree, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillStyle = stream.color;
+        function updateDrop(drop) {
+            drop.y += drop.speed;
 
-                if (i === 0) {
-                    ctx.shadowColor = 'rgba(255,255,255,0.20)';
-                    ctx.shadowBlur = 10;
-                } else if (i <= 2) {
-                    ctx.shadowColor = 'rgba(255,255,255,0.08)';
-                    ctx.shadowBlur = 4;
-                }
+            if (Math.random() < 0.0025) {
+                drop.symbol = pick(symbols);
+            }
 
-                ctx.fillText(stream.items[i], x, y);
-                ctx.restore();
+            if (drop.y > height + 60) {
+                drop.y = randomBetween(-180, -40);
+                drop.symbol = pick(symbols);
             }
         }
 
-        function updateStream(stream) {
-            stream.y += stream.speed;
-
-            if (Math.random() < 0.006) {
-                const idx = Math.floor(Math.random() * stream.items.length);
-                stream.items[idx] = pick(symbols);
-            }
-
-            if (stream.y - ((stream.items.length - 1) * stream.gap) > height + 120) {
-                stream.y = rand(-240, -60);
-                stream.items = makeTrail(stream.items.length);
-            }
-        }
-
-        function animate(time) {
+        function animate(time = 0) {
             ctx.clearRect(0, 0, width, height);
 
-            for (const stream of streams) {
-                drawStream(stream, time);
-                updateStream(stream);
+            for (const drop of drops) {
+                drawDrop(drop, time);
+                updateDrop(drop);
             }
 
-            rafId = requestAnimationFrame(animate);
+            animationId = requestAnimationFrame(animate);
         }
 
         resizeCanvas();
         animate();
 
         window.addEventListener('resize', () => {
-            if (rafId) cancelAnimationFrame(rafId);
+            if (animationId) cancelAnimationFrame(animationId);
             resizeCanvas();
             animate();
         });
     })();
     </script>
 </x-guest-layout>
-'@ | Set-Content resources\views\auth\register.blade.php -Encoding UTF8
+
+
+
+
